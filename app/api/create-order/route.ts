@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@/lib/db';
-import fs from 'fs';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    fs.appendFileSync('debug.log', 'Start POST order\n');
     const { plan, name, email, ref, quantity = 1 } = await req.json();
 
     if (!name || !email) {
@@ -17,14 +17,10 @@ export async function POST(req: Request) {
     const amount = (isFullPlan ? 49900 : 1900) * quantity; // Amount in paise
     const productType = isFullPlan ? 'full' : 'mini';
     
-    fs.appendFileSync('debug.log', `Plan: ${plan}, Amount: ${amount}\n`);
-
     // Initialize Razorpay
     const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     const key_secret = process.env.RAZORPAY_KEY_SECRET;
     
-    fs.appendFileSync('debug.log', `Keys: ${key_id}, Secret: ${!!key_secret}\n`);
-
     const purchaseId = uuidv4();
 
     let orderId = `mock_order_${Date.now()}`;
@@ -42,12 +38,9 @@ export async function POST(req: Request) {
           receipt: purchaseId,
         };
 
-        fs.appendFileSync('debug.log', `Creating Razorpay order...\n`);
         const order = await razorpay.orders.create(options);
-        fs.appendFileSync('debug.log', `Order created: ${order.id}\n`);
         orderId = order.id;
       } catch (rzpErr: any) {
-        fs.appendFileSync('debug.log', `Razorpay Error: ${JSON.stringify(rzpErr)}\n`);
         throw rzpErr;
       }
     }
@@ -62,7 +55,6 @@ export async function POST(req: Request) {
     `);
     
     stmt.run(purchaseId, name, email, amount / 100, productType, 'pending', orderId, referralCode, ref || null, quantity);
-    fs.appendFileSync('debug.log', `DB inserted\n`);
 
     return NextResponse.json({
       id: orderId,
@@ -73,7 +65,6 @@ export async function POST(req: Request) {
     });
 
   } catch (error: any) {
-    fs.appendFileSync('debug.log', `ERROR: ${error.message || 'Unknown'}\n`);
     console.error('Create order error:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
