@@ -26,8 +26,18 @@ function CheckoutForm() {
   const [error, setError] = useState("");
 
   const isFullPlan = plan === "full";
-  const price = isFullPlan ? 499 : 19;
-  const planName = isFullPlan ? "AI Startup Launch Pack" : "Startup Roadmap + Marketing Strategy";
+  const isGuidePlan = plan === "guide";
+  
+  let price = 19;
+  let planName = "Startup Roadmap + Marketing Strategy";
+  
+  if (isFullPlan) {
+    price = 499;
+    planName = "AI Startup Launch Pack";
+  } else if (isGuidePlan) {
+    price = 10;
+    planName = "Startup Guide PDF";
+  }
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,7 +151,7 @@ function CheckoutForm() {
       });
       rzp.open();
     } catch (err: any) {
-      console.error("Payment flow error:", err);
+      // Intentionally not using console.error here to avoid Next.js error overlay
       setError(err.message || "An unexpected error occurred");
       setLoading(false);
     }

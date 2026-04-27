@@ -13,36 +13,55 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
     }
 
-    const isFullPlan = plan === 'full';
-    const amount = (isFullPlan ? 49900 : 1900) * quantity; // Amount in paise
-    const productType = isFullPlan ? 'full' : 'mini';
+    let baseAmount = 1900; // default mini
+    let productType = 'mini';
     
+    if (plan === 'full') {
+      baseAmount = 49900;
+      productType = 'full';
+    } else if (plan === 'guide') {
+      baseAmount = 1000;
+      productType = 'guide';
+    }
+    
+    const amount = baseAmount * quantity; // Amount in paise
+    
+    if (amount < 100) {
+      return NextResponse.json({ error: 'Amount must be at least 100 paise' }, { status: 400 });
+    }
+
     // Initialize Razorpay
-    const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-    const key_secret = process.env.RAZORPAY_KEY_SECRET;
+    const key_id = (process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "").trim();
+    const key_secret = (process.env.RAZORPAY_KEY_SECRET || "").trim();
     
+    if (!key_id || !key_secret) {
+      return NextResponse.json({ error: 'Razorpay keys not configured' }, { status: 500 });
+    }
+
     const purchaseId = uuidv4();
 
-    let orderId = `mock_order_${Date.now()}`;
+    let orderId = '';
 
-    if (key_id && key_secret && key_id !== 'rzp_test_your_key_id') {
-      try {
-        const razorpay = new Razorpay({
-          key_id,
-          key_secret,
-        });
+    try {
+      const razorpay = new Razorpay({
+        key_id,
+        key_secret,
+      });
 
-        const options = {
-          amount,
-          currency: 'INR',
-          receipt: purchaseId,
-        };
+      const options = {
+        amount,
+        currency: 'INR',
+        receipt: purchaseId,
+      };
 
-        const order = await razorpay.orders.create(options);
-        orderId = order.id;
-      } catch (rzpErr: any) {
-        throw rzpErr;
+      const order = await razorpay.orders.create(options);
+      orderId = order.id;
+    } catch (rzpErr: any) {
+      // Intentionally omitting console.error to avoid Next.js dev overlay for invalid keys
+      if (rzpErr.statusCode === 401) {
+        return NextResponse.json({ error: 'Razorpay authentication failed: ' + (rzpErr.error?.description || rzpErr.message) }, { status: 401 });
       }
+      return NextResponse.json({ error: 'Razorpay error: ' + (rzpErr.error?.description || rzpErr.message) }, { status: rzpErr.statusCode || 500 });
     }
 
     // Generate a referral code for this user

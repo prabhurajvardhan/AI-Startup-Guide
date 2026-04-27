@@ -27,8 +27,17 @@ export async function GET(req: Request) {
 
     // Validate file access based on product type
     const isFullPlan = purchase.product_type === 'full';
+    const isGuidePlan = purchase.product_type === 'guide';
     
-    if (!isFullPlan && (file === 'tools' || file === 'checklist')) {
+    if (isGuidePlan && file !== 'guide') {
+      return new NextResponse('File not included in your 10rs guide plan', { status: 403 });
+    }
+    
+    if (!isFullPlan && !isGuidePlan && (file === 'tools' || file === 'checklist' || file === 'guide')) {
+      return new NextResponse('File not included in your plan', { status: 403 });
+    }
+    
+    if (!isFullPlan && file === 'guide' && !isGuidePlan) {
       return new NextResponse('File not included in your plan', { status: 403 });
     }
 

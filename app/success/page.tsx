@@ -74,6 +74,7 @@ function SuccessContent() {
   }
 
   const isFullPlan = purchase.product_type === 'full';
+  const isGuidePlan = purchase.product_type === 'guide';
 
   return (
     <motion.div
@@ -95,62 +96,93 @@ function SuccessContent() {
         <h2 className="font-display text-2xl font-bold mb-6">Your Downloads</h2>
         
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
-            <div>
-              <p className="font-medium">90-Day Startup Roadmap</p>
-              <p className="text-sm text-neutral-500">PDF Guide</p>
+          {isGuidePlan ? (
+            <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
+              <div>
+                <p className="font-medium">10rs Startup Guide</p>
+                <p className="text-sm text-neutral-500">PDF Guide</p>
+              </div>
+              <button 
+                onClick={() => handleDownload('guide')}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>Download</span>
+              </button>
             </div>
-            <button 
-              onClick={() => handleDownload('roadmap')}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download</span>
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
-            <div>
-              <p className="font-medium">Marketing Strategy Guide</p>
-              <p className="text-sm text-neutral-500">PDF Guide</p>
-            </div>
-            <button 
-              onClick={() => handleDownload('marketing')}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download</span>
-            </button>
-          </div>
-
-          {isFullPlan && (
+          ) : (
             <>
               <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
                 <div>
-                  <p className="font-medium">AI Tools List & Idea Framework</p>
+                  <p className="font-medium">90-Day Startup Roadmap</p>
                   <p className="text-sm text-neutral-500">PDF Guide</p>
                 </div>
                 <button 
-                  onClick={() => handleDownload('tools')}
+                  onClick={() => handleDownload('roadmap')}
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download</span>
                 </button>
               </div>
+
               <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
                 <div>
-                  <p className="font-medium">App Launch Checklist</p>
+                  <p className="font-medium">Marketing Strategy Guide</p>
                   <p className="text-sm text-neutral-500">PDF Guide</p>
                 </div>
                 <button 
-                  onClick={() => handleDownload('checklist')}
+                  onClick={() => handleDownload('marketing')}
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download</span>
                 </button>
               </div>
+
+              {isFullPlan && (
+                <>
+                  <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
+                    <div>
+                      <p className="font-medium">AI Tools List & Idea Framework</p>
+                      <p className="text-sm text-neutral-500">PDF Guide</p>
+                    </div>
+                    <button 
+                      onClick={() => handleDownload('tools')}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
+                    <div>
+                      <p className="font-medium">App Launch Checklist</p>
+                      <p className="text-sm text-neutral-500">PDF Guide</p>
+                    </div>
+                    <button 
+                      onClick={() => handleDownload('checklist')}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-neutral-950 rounded-xl border border-white/5">
+                    <div>
+                      <p className="font-medium">10rs Startup Guide</p>
+                      <p className="text-sm text-neutral-500">PDF Guide</p>
+                    </div>
+                    <button 
+                      onClick={() => handleDownload('guide')}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download</span>
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>
