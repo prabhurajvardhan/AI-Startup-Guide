@@ -1,34 +1,34 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Map, Wrench, Megaphone, Lightbulb } from "lucide-react";
+import { BookOpen, Target, GitPullRequest, Bot } from "lucide-react";
 
 const cards = [
   {
-    title: "90-Day Startup Roadmap PDF",
-    description: "A day-by-day guide telling you exactly what to do from day 1 to day 90.",
-    icon: Map,
+    title: "SOURCE ENGINE",
+    description: "150 curated learning sources. Concept-wise learning pool covering all major ML engineering capabilities.",
+    icon: BookOpen,
     color: "from-blue-500/20 to-blue-500/5",
     iconColor: "text-blue-400",
   },
   {
-    title: "Top AI Tools for Building Apps",
-    description: "The secret list of no-code and AI tools that replace a full engineering team.",
-    icon: Wrench,
+    title: "PRACTICE ENGINE",
+    description: "150 progressive missions. Learn → Experiment → Build → Break → Debug → Prove.",
+    icon: Target,
     color: "from-purple-500/20 to-purple-500/5",
     iconColor: "text-purple-400",
   },
   {
-    title: "Marketing Strategy Guide",
-    description: "How to get your first 100 users without spending a single rupee on ads.",
-    icon: Megaphone,
-    color: "from-pink-500/20 to-pink-500/5",
-    iconColor: "text-pink-400",
+    title: "OPEN-SOURCE ENGINE",
+    description: "Real ML open-source repositories with real issues and contribution-oriented engineering missions.",
+    icon: GitPullRequest,
+    color: "from-green-500/20 to-green-500/5",
+    iconColor: "text-green-400",
   },
   {
-    title: "Startup Idea Generator",
-    description: "Frameworks to find profitable problems and validate them instantly.",
-    icon: Lightbulb,
+    title: "AI MENTOR WORKFLOWS",
+    description: "Transform raw source material into an interactive mentor that challenges assumptions and helps you debug.",
+    icon: Bot,
     color: "from-amber-500/20 to-amber-500/5",
     iconColor: "text-amber-400",
   },
@@ -45,8 +45,8 @@ export function WhatsInside() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">What&apos;s Inside?</h2>
-          <p className="text-neutral-400 text-lg">Everything you need, nothing you don&apos;t.</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">The Kit</h2>
+          <p className="text-neutral-400 text-lg">Three comprehensive modules for total execution.</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">

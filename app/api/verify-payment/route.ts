@@ -27,6 +27,14 @@ export async function POST(req: Request) {
     const isAuthentic = expectedSignature === razorpay_signature;
 
     if (isAuthentic) {
+      // Security fix: Ensure the order ID matches the purchase record
+      const checkStmt = db.prepare(`SELECT razorpay_order_id FROM purchases WHERE id = ?`);
+      const purchaseRecord = checkStmt.get(purchaseId) as { razorpay_order_id: string } | undefined;
+      
+      if (!purchaseRecord || purchaseRecord.razorpay_order_id !== razorpay_order_id) {
+        return NextResponse.json({ error: 'Order ID mismatch or purchase not found' }, { status: 400 });
+      }
+
       // Update purchase status
       const stmt = db.prepare(`
         UPDATE purchases 

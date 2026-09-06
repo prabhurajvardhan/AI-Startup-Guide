@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 import db from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -25,31 +27,42 @@ export async function GET(req: Request) {
       return new NextResponse('Unauthorized or purchase not found', { status: 401 });
     }
 
-    // Validate file access based on product type
-    const isFullPlan = purchase.product_type === 'full';
-    const isGuidePlan = purchase.product_type === 'guide';
+    // Validate entitlement
+    // Allow legacy 'full' or new 'kit' and 'founding' for the new ML Engineer Kit
+    const hasKitAccess = purchase.product_type === 'full' || purchase.product_type === 'kit' || purchase.product_type === 'founding';
     
-    if (isGuidePlan && file !== 'guide') {
-      return new NextResponse('File not included in your 10rs guide plan', { status: 403 });
-    }
-    
-    if (!isFullPlan && !isGuidePlan && (file === 'tools' || file === 'checklist' || file === 'guide')) {
-      return new NextResponse('File not included in your plan', { status: 403 });
-    }
-    
-    if (!isFullPlan && file === 'guide' && !isGuidePlan) {
-      return new NextResponse('File not included in your plan', { status: 403 });
+    if (!hasKitAccess) {
+       return new NextResponse('File not included in your plan', { status: 403 });
     }
 
-    // In a real app, we would read the actual PDF file from a secure location (e.g., S3 or private folder)
-    // For this demo, we'll generate a dummy text file
+    // Map file names to actual PDF files in assets directory
+    let fileName = '';
+    let downloadName = '';
+    if (file === 'source') {
+      fileName = 'Nanoware_AI_ML_Engineer_Playlist_Source_Pool.pdf';
+      downloadName = 'Source_Engine.pdf';
+    } else if (file === 'practice') {
+      fileName = 'Nanoware_AI_ML_Engineer_Practice_Missions.pdf';
+      downloadName = 'Practice_Engine.pdf';
+    } else if (file === 'opensource') {
+      fileName = 'Nanoware_AI_ML_Engineer_Open_Source_Contribution_Lab_V2.pdf';
+      downloadName = 'Open_Source_Engine.pdf';
+    } else {
+      return new NextResponse('Invalid file requested', { status: 400 });
+    }
+
+    const filePath = path.join(process.cwd(), 'assets', fileName);
     
-    const fileContent = `This is the dummy content for ${file}.pdf.\n\nThank you for purchasing the AI Startup Launch Pack!`;
+    if (!fs.existsSync(filePath)) {
+      return new NextResponse('File not found on server', { status: 404 });
+    }
     
-    return new NextResponse(fileContent, {
+    const fileBuffer = fs.readFileSync(filePath);
+
+    return new NextResponse(fileBuffer, {
       headers: {
-        'Content-Type': 'application/pdf', // Mocking PDF
-        'Content-Disposition': `attachment; filename="${file}.pdf"`,
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${downloadName}"`,
       },
     });
 
@@ -58,3 +71,4 @@ export async function GET(req: Request) {
     return new NextResponse('Internal server error', { status: 500 });
   }
 }
+

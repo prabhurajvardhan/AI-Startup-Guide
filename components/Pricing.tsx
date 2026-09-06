@@ -1,14 +1,59 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ShieldCheck, Zap } from "lucide-react";
+import { ShieldCheck, Zap, Download } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function Pricing() {
+  const router = useRouter();
+  const [foundingStats, setFoundingStats] = useState({ claimed: 0, remaining: 50, loading: true });
+  const [claiming, setClaiming] = useState(false);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    fetch('/api/founding-status')
+      .then(res => res.json())
+      .then(data => {
+        setFoundingStats({ claimed: data.claimed, remaining: data.remaining, loading: false });
+      })
+      .catch(err => {
+        setFoundingStats(prev => ({ ...prev, loading: false }));
+      });
+  }, []);
+
+  const handleClaim = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !email) return alert("Please enter name and email");
+    setClaiming(true);
+    
+    try {
+      const res = await fetch('/api/claim-founding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        router.push(`/success?id=${data.purchaseId}`);
+      } else {
+        alert(data.error || 'Failed to claim');
+        setClaiming(false);
+      }
+    } catch (err) {
+      alert("Network error");
+      setClaiming(false);
+    }
+  };
+
   return (
-    <section className="py-24 relative">
+    <section className="py-24 relative" id="pricing">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Main 499 Pack */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          
+          {/* Main Kit Pack */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -19,35 +64,40 @@ export function Pricing() {
             <div className="bg-neutral-950 rounded-[22px] p-8 md:p-12 text-center h-full flex flex-col">
               <div className="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-sm font-medium mb-6 self-center">
                 <Zap className="w-4 h-4" />
-                <span>Limited Time Offer</span>
+                <span>Immediate Access</span>
               </div>
               
-              <h2 className="font-display text-3xl font-bold mb-2">AI Startup Launch Pack</h2>
-              <p className="text-neutral-400 mb-8">Full access to all guides, roadmaps, and tools.</p>
+              <h2 className="font-display text-3xl font-bold mb-2">The ML Engineer Kit</h2>
+              <p className="text-neutral-400 mb-8">
+                Source Engine • Practice Engine • Open-Source Engine
+              </p>
               
-              <div className="flex items-baseline justify-center gap-2 mb-8 mt-auto">
-                <span className="font-display text-5xl font-extrabold">₹499</span>
-                <span className="text-neutral-500 line-through">₹999</span>
+              <div className="flex items-baseline justify-center gap-3 mb-2 mt-auto">
+                <span className="font-display text-5xl font-extrabold">₹289</span>
+                <span className="text-neutral-500 line-through text-2xl">₹600</span>
+              </div>
+              <p className="text-green-400 font-medium mb-8">SAVE ₹311</p>
+
+              <div className="text-left space-y-3 mb-8 px-4 text-neutral-300">
+                <div className="flex items-center gap-3"><CheckIcon /> <span>150+ Curated Learning Sources</span></div>
+                <div className="flex items-center gap-3"><CheckIcon /> <span>150+ Progressive Practice Missions</span></div>
+                <div className="flex items-center gap-3"><CheckIcon /> <span>Real Open-Source Repository Labs</span></div>
+                <div className="flex items-center gap-3"><CheckIcon /> <span>AI Mentor Workflows</span></div>
               </div>
 
-              <a href="/checkout?plan=full" className="block w-full py-4 px-8 rounded-xl bg-white text-neutral-950 font-bold text-lg hover:bg-neutral-200 transition-colors mb-6">
-                Download Now
+              <a href="/checkout?plan=kit" className="block w-full py-4 px-8 rounded-xl bg-white text-neutral-950 font-bold text-lg hover:bg-neutral-200 transition-colors mb-6 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                GET THE KIT — ₹289
               </a>
-
               <div className="flex flex-col items-center gap-3 text-sm text-neutral-500">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-green-400" />
                   <span>Secure payment via Razorpay</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-400" />
-                  <span>Instant access after purchase</span>
-                </div>
               </div>
             </div>
           </motion.div>
 
-          {/* 10rs Guide PDF */}
+          {/* Founding 50 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -56,33 +106,67 @@ export function Pricing() {
             className="relative p-1 rounded-3xl bg-white/5 border border-white/10"
           >
             <div className="bg-neutral-900 rounded-[22px] p-8 md:p-12 text-center h-full flex flex-col">
+              <div className="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-sm font-medium mb-6 self-center border border-amber-500/20">
+                <span>FOUNDING 50</span>
+              </div>
               
-              <h2 className="font-display text-3xl font-bold mb-4 mt-8">Guide PDF</h2>
-              <p className="text-neutral-400 mb-8">Need time to get full setup? Get started with our ₹10 startup guide.</p>
+              <h2 className="font-display text-3xl font-bold mb-4">First 50 Learners</h2>
+              <p className="text-neutral-400 mb-6">
+                We&apos;re giving the complete ML Engineer Kit for free to the first 50 learners who will actually use it and provide honest feedback.
+              </p>
               
               <div className="flex items-baseline justify-center gap-2 mb-8 mt-auto">
-                <span className="font-display text-5xl font-extrabold">₹10</span>
+                <span className="font-display text-5xl font-extrabold text-white">FREE</span>
               </div>
 
-              <a href="/checkout?plan=guide" className="block w-full py-4 px-8 rounded-xl bg-neutral-800 text-white font-bold text-lg hover:bg-neutral-700 transition-colors mb-6">
-                Get the Guide
-              </a>
-
-              <div className="flex flex-col items-center gap-3 text-sm text-neutral-500">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-green-400" />
-                  <span>Secure payment via Razorpay</span>
+              {!foundingStats.loading && foundingStats.remaining > 0 ? (
+                <form onSubmit={handleClaim} className="space-y-4 mb-6">
+                  <input 
+                    type="text" 
+                    placeholder="Your Name" 
+                    required 
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    className="w-full px-4 py-3 bg-neutral-950 border border-white/10 rounded-xl text-white" 
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="Your Email" 
+                    required 
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 bg-neutral-950 border border-white/10 rounded-xl text-white" 
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={claiming}
+                    className="w-full py-4 px-8 rounded-xl bg-amber-500 text-neutral-950 font-bold text-lg hover:bg-amber-400 transition-colors disabled:opacity-50"
+                  >
+                    {claiming ? 'Claiming...' : 'CLAIM FOUNDING ACCESS'}
+                  </button>
+                  <p className="text-amber-400 text-sm font-medium">
+                    {foundingStats.remaining} / 50 spots remaining
+                  </p>
+                </form>
+              ) : !foundingStats.loading ? (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 py-4 px-6 rounded-xl mb-6 font-medium">
+                  All 50 founding spots have been claimed.
                 </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-400" />
-                  <span>Instant access after purchase</span>
-                </div>
-              </div>
+              ) : (
+                <div className="py-8 text-neutral-500">Checking availability...</div>
+              )}
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+      <Zap className="w-3 h-3 text-indigo-400" />
+    </div>
   );
 }

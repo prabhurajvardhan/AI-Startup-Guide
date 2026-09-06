@@ -4,9 +4,9 @@ import { motion } from "motion/react";
 import { XCircle } from "lucide-react";
 
 const problems = [
-  "Students graduating without jobs or clear career paths",
-  "Too many startup ideas but no step-by-step roadmap",
-  "Confusion about which AI tools to use and where to start",
+  "Courses → You just watch.",
+  "Tutorials → You blindly follow.",
+  "Roadmaps → You only plan.",
 ];
 
 export function Problem() {
@@ -21,27 +21,35 @@ export function Problem() {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Sound familiar?</h2>
-            <p className="text-neutral-400 text-lg">The traditional path isn&apos;t working anymore.</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">The Passive Learning Trap</h2>
+            <p className="text-neutral-400 text-lg">Becoming an engineer requires you to build, break, and debug.</p>
           </motion.div>
 
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-3 gap-4 mb-12">
             {problems.map((problem, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5"
+                className="flex items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/5 justify-center text-center"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
-                  <XCircle className="w-5 h-5 text-red-400" />
-                </div>
-                <p className="text-neutral-300 text-lg">{problem}</p>
+                <p className="text-neutral-300 text-lg font-medium">{problem}</p>
               </motion.div>
             ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-center"
+          >
+            <p className="text-2xl font-bold text-white mb-2">Understand. Build. Break. Debug. Prove. Contribute.</p>
+            <p className="text-indigo-400 font-medium">This kit makes you do the actual work.</p>
+          </motion.div>
         </div>
       </div>
     </section>

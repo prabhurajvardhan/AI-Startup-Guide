@@ -2,8 +2,8 @@ import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
 import { Solution } from "@/components/Solution";
 import { WhatsInside } from "@/components/WhatsInside";
+import { PDFPreview } from "@/components/PDFPreview";
 import { Pricing } from "@/components/Pricing";
-import { Downsell } from "@/components/Downsell";
 import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -16,9 +16,9 @@ export default function Home() {
       <Problem />
       <Solution />
       <WhatsInside />
+      <PDFPreview />
       <Testimonials />
       <Pricing />
-      <Downsell />
       <FAQ />
       <FinalCTA />
       <Footer />

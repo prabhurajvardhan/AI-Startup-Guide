@@ -7,11 +7,14 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    const { plan, name, email, ref, quantity = 1 } = await req.json();
+    let { plan, name, email, ref, quantity = 1 } = await req.json();
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
     }
+
+    // Security fix: Ensure quantity is a valid integer >= 1
+    quantity = Math.max(1, Math.floor(Number(quantity) || 1));
 
     let baseAmount = 1900; // default mini
     let productType = 'mini';
@@ -22,6 +25,9 @@ export async function POST(req: Request) {
     } else if (plan === 'guide') {
       baseAmount = 1000;
       productType = 'guide';
+    } else if (plan === 'kit') {
+      baseAmount = 28900;
+      productType = 'kit';
     }
     
     const amount = baseAmount * quantity; // Amount in paise

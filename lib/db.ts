@@ -36,6 +36,20 @@ function getDb(): Database.Database {
         referred_purchase_id TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        role TEXT NOT NULL,
+        rating INTEGER NOT NULL,
+        useful TEXT NOT NULL,
+        built TEXT NOT NULL,
+        testimonial TEXT NOT NULL,
+        profile TEXT,
+        consent INTEGER NOT NULL,
+        approved INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
     // Add quantity column if it doesn't already exist

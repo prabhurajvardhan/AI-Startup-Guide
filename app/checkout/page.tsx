@@ -27,11 +27,15 @@ function CheckoutForm() {
 
   const isFullPlan = plan === "full";
   const isGuidePlan = plan === "guide";
+  const isKitPlan = plan === "kit";
   
   let price = 19;
   let planName = "Startup Roadmap + Marketing Strategy";
   
-  if (isFullPlan) {
+  if (isKitPlan) {
+    price = 289;
+    planName = "The ML Engineer Kit";
+  } else if (isFullPlan) {
     price = 499;
     planName = "AI Startup Launch Pack";
   } else if (isGuidePlan) {
@@ -137,9 +141,6 @@ function CheckoutForm() {
         modal: {
           ondismiss: function () {
             setLoading(false);
-            if (isFullPlan) {
-              router.push("/downsell");
-            }
           },
         },
       };

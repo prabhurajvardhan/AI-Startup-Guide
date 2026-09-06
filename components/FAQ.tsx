@@ -6,25 +6,30 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "Do I need coding skills?",
-    answer: "Not at all. The tools and strategies recommended in this pack focus heavily on no-code and AI-assisted development. If you can write a prompt, you can build an app.",
+    question: "What is the ML Engineer Kit?",
+    answer: "A complete execution system consisting of three modules: a Source Engine (150 curated learning sources), a Practice Engine (150 progressive missions), and an Open-Source Engine (real repositories and issues). It is designed to move you from passive learning to active engineering.",
   },
   {
-    question: "Can a student build a startup alone?",
-    answer: "Yes! With modern AI tools, a single person can do the work of a designer, developer, and marketer. This pack shows you exactly how to leverage these tools as a solo founder.",
+    question: "Is this a course?",
+    answer: "No. Courses make you watch. This kit makes you do. We curate the best external learning resources and provide a structured system to practice, build, and debug.",
   },
   {
-    question: "Will I get instant access?",
-    answer: "Yes, immediately after your payment is processed, you will be redirected to a download page and receive an email with the download link for all the materials.",
+    question: "Do I need to watch all the resources?",
+    answer: "No. The AI Mentor workflow shows you how to supply source materials to an AI, transforming raw reading into an interactive mentor that challenges you and helps you debug.",
   },
   {
-    question: "What tools do I need?",
-    answer: "Just a laptop and an internet connection. Most of the AI tools recommended have generous free tiers that are more than enough to get your startup off the ground.",
+    question: "What is the Founding 50 program?",
+    answer: "We are giving the complete kit for free to the first 50 learners. In return, we expect you to actually use the kit and provide honest feedback (not just positive reviews).",
+  },
+  {
+    question: "How do I access the PDFs?",
+    answer: "Immediately after purchase or claiming a founding slot, you'll get secure access to download the three engine modules from your success dashboard.",
   },
 ];
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
 
   return (
     <section className="py-24">

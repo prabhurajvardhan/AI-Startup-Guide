@@ -14,8 +14,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'AI Startup Launch Pack',
-  description: 'Build your first AI startup in 90 days.',
+  title: 'The ML Engineer Kit | Nanoware AI',
+  description: 'Stop consuming ML. Start becoming an ML Engineer with curated sources, practice missions, and open-source labs.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

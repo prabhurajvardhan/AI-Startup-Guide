@@ -4,11 +4,11 @@ import { motion } from "motion/react";
 import { CheckCircle2 } from "lucide-react";
 
 const solutions = [
-  "90-day step-by-step startup roadmap",
-  "Curated list of top AI tools for building apps",
-  "Beginner-friendly startup ideas that work",
-  "Zero-budget marketing strategy",
-  "Complete app launch checklist",
+  "Curated learning pool for conceptual understanding",
+  "150 progressive practice missions",
+  "Real ML open-source contribution paths",
+  "AI mentor workflow frameworks",
+  "A complete system to build, break, debug, and prove",
 ];
 
 export function Solution() {
@@ -28,10 +28,10 @@ export function Solution() {
             className="text-center mb-16"
           >
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-              The AI Startup Launch Pack
+              The ML Engineer Kit
             </h2>
             <p className="text-xl text-neutral-400">
-              Everything you need to go from idea to launched product, without writing complex code.
+              Everything you need to stop watching tutorials and start engineering real ML systems.
             </p>
           </motion.div>
 
@@ -47,7 +47,7 @@ export function Solution() {
               {/* Abstract representation of the pack */}
               <div className="relative w-full h-full border border-white/10 rounded-2xl bg-neutral-950 shadow-2xl flex flex-col p-6">
                 <div className="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center mb-6">
-                  <span className="text-2xl">🚀</span>
+                  <span className="text-2xl">🧠</span>
                 </div>
                 <div className="h-4 w-3/4 bg-white/10 rounded mb-4" />
                 <div className="h-4 w-1/2 bg-white/10 rounded mb-8" />
