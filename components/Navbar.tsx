@@ -5,7 +5,7 @@ import Link from "next/link";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
 
-export function Navbar() {
+export function Navbar({ clientId: serverClientId }: { clientId?: string }) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -36,7 +36,7 @@ export function Navbar() {
     router.push('/');
   };
 
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+  const clientId = serverClientId || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
 
   return (
     <nav className="border-b border-white/5 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
@@ -71,7 +71,7 @@ export function Navbar() {
                 </button>
               </div>
             </div>
-          ) : (
+          ) : clientId ? (
             <GoogleOAuthProvider clientId={clientId}>
               <GoogleLogin
                 onSuccess={async (credentialResponse) => {
@@ -96,6 +96,10 @@ export function Navbar() {
                 shape="pill"
               />
             </GoogleOAuthProvider>
+          ) : (
+            <div className="text-xs font-medium text-amber-400 border border-amber-500/20 bg-amber-500/10 px-4 py-2 rounded-full">
+              Google Auth Disabled (Missing Client ID)
+            </div>
           )}
         </div>
       </div>

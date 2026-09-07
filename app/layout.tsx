@@ -24,7 +24,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body className="font-sans antialiased bg-neutral-950 text-neutral-50 selection:bg-indigo-500/30" suppressHydrationWarning>
         <Tracker />
-        <Navbar />
+        <Navbar clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || ''} />
         {children}
       </body>
     </html>

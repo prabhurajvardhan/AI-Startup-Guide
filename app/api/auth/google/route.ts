@@ -4,8 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import db from '@/lib/db';
 import { createSession, logAudit } from '@/lib/auth';
 
-const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-
 export async function POST(req: Request) {
   try {
     const { credential } = await req.json();
@@ -14,9 +12,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing credential' }, { status: 400 });
     }
 
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '';
+    
+    if (!clientId) {
+      return NextResponse.json({ error: 'Server configuration error: Missing Google Client ID' }, { status: 500 });
+    }
+
+    const client = new OAuth2Client(clientId);
+
     const ticket = await client.verifyIdToken({
       idToken: credential,
-      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      audience: clientId,
     });
 
     const payload = ticket.getPayload();
