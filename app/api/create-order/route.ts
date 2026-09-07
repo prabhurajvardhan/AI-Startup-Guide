@@ -2,11 +2,15 @@ import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@/lib/db';
+import { getSession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const session = await getSession();
+    const userId = session ? session.id : null;
+
     let { plan, name, email, ref, quantity = 1 } = await req.json();
 
     if (!name || !email) {
@@ -63,23 +67,20 @@ export async function POST(req: Request) {
       const order = await razorpay.orders.create(options);
       orderId = order.id;
     } catch (rzpErr: any) {
-      // Intentionally omitting console.error to avoid Next.js dev overlay for invalid keys
       if (rzpErr.statusCode === 401) {
         return NextResponse.json({ error: 'Razorpay authentication failed: ' + (rzpErr.error?.description || rzpErr.message) }, { status: 401 });
       }
       return NextResponse.json({ error: 'Razorpay error: ' + (rzpErr.error?.description || rzpErr.message) }, { status: rzpErr.statusCode || 500 });
     }
 
-    // Generate a referral code for this user
     const referralCode = uuidv4().substring(0, 8);
 
-    // Save initial purchase record as pending
     const stmt = db.prepare(`
-      INSERT INTO purchases (id, name, email, amount, product_type, status, razorpay_order_id, referral_code, referred_by, quantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO purchases (id, name, email, amount, product_type, status, razorpay_order_id, referral_code, referred_by, quantity, user_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     
-    stmt.run(purchaseId, name, email, amount / 100, productType, 'pending', orderId, referralCode, ref || null, quantity);
+    stmt.run(purchaseId, name, email, amount / 100, productType, 'pending', orderId, referralCode, ref || null, quantity, userId);
 
     return NextResponse.json({
       id: orderId,
