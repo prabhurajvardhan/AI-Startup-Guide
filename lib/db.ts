@@ -110,6 +110,7 @@ function getDb(): Database.Database {
 const lazyDb = {
   prepare: (sql: string) => getDb().prepare(sql),
   exec: (sql: string) => getDb().exec(sql),
+  transaction: (fn: any) => getDb().transaction(fn),
 };
 
 export default lazyDb as unknown as Database.Database;

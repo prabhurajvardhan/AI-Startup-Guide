@@ -1,9 +1,14 @@
 import { requireAdmin } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import db from '@/lib/db';
 import { Users, CreditCard, TrendingUp, Link as LinkIcon } from 'lucide-react';
 
 export default async function AdminDashboard() {
-  await requireAdmin();
+  try {
+    await requireAdmin();
+  } catch (error) {
+    redirect('/');
+  }
 
   const usersCount = (db.prepare('SELECT count(*) as count FROM users').get() as any).count;
   const purchasesCount = (db.prepare('SELECT count(*) as count FROM purchases WHERE status = "completed"').get() as any).count;

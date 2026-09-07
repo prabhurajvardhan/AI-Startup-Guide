@@ -1,10 +1,15 @@
 import { requireAdmin } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import db from '@/lib/db';
 import { Check, X } from 'lucide-react';
 import { revalidatePath } from 'next/cache';
 
 export default async function AdminReviews() {
-  await requireAdmin();
+  try {
+    await requireAdmin();
+  } catch (error) {
+    redirect('/');
+  }
 
   const reviews = db.prepare('SELECT * FROM reviews ORDER BY created_at DESC').all() as any[];
 

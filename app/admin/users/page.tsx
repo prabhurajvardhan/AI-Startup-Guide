@@ -1,8 +1,13 @@
 import { requireAdmin } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import db from '@/lib/db';
 
 export default async function AdminUsers() {
-  await requireAdmin();
+  try {
+    await requireAdmin();
+  } catch (error) {
+    redirect('/');
+  }
 
   const users = db.prepare('SELECT * FROM users ORDER BY created_at DESC').all() as any[];
   const purchases = db.prepare('SELECT * FROM purchases ORDER BY created_at DESC').all() as any[];

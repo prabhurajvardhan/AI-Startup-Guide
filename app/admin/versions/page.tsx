@@ -1,11 +1,16 @@
 import { requireAdmin } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import db from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import fs from 'fs';
 import path from 'path';
 
 export default async function AdminVersions() {
-  await requireAdmin();
+  try {
+    await requireAdmin();
+  } catch (error) {
+    redirect('/');
+  }
 
   // Make sure default products exist
   try {
