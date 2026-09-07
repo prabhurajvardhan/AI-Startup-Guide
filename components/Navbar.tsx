@@ -36,7 +36,10 @@ export function Navbar({ clientId: serverClientId }: { clientId?: string }) {
     router.push('/');
   };
 
-  const clientId = serverClientId || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+  let clientId = serverClientId || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+  if (clientId) {
+    clientId = clientId.replace(/^https?:\/\//, '').replace(/["']/g, '').trim();
+  }
 
   return (
     <nav className="border-b border-white/5 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
@@ -71,7 +74,7 @@ export function Navbar({ clientId: serverClientId }: { clientId?: string }) {
                 </button>
               </div>
             </div>
-          ) : clientId ? (
+          ) : clientId && clientId !== 'YOUR_GOOGLE_CLIENT_ID' ? (
             <GoogleOAuthProvider clientId={clientId}>
               <GoogleLogin
                 onSuccess={async (credentialResponse) => {
@@ -98,7 +101,7 @@ export function Navbar({ clientId: serverClientId }: { clientId?: string }) {
             </GoogleOAuthProvider>
           ) : (
             <div className="text-xs font-medium text-amber-400 border border-amber-500/20 bg-amber-500/10 px-4 py-2 rounded-full">
-              Google Auth Disabled (Missing Client ID)
+              Google Auth Disabled (ID: {clientId ? 'Invalid/Default' : 'Missing'})
             </div>
           )}
         </div>

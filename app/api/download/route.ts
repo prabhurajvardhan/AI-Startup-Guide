@@ -18,17 +18,24 @@ export async function GET(req: Request) {
 
     let hasKitAccess = false;
     let hasGuideAccess = false;
+    
+    const session = await getSession();
 
     if (id) {
       const stmt = db.prepare(`
-        SELECT product_type, status 
+        SELECT product_type, status, user_id 
         FROM purchases 
         WHERE id = ? AND status = 'completed'
       `);
       
-      const purchase = stmt.get(id) as { product_type: string, status: string } | undefined;
+      const purchase = stmt.get(id) as { product_type: string, status: string, user_id: string | null } | undefined;
       
       if (purchase) {
+        // Enforce user ownership if the purchase is tied to a user account
+        if (purchase.user_id !== null && (!session || session.id !== purchase.user_id)) {
+          return new NextResponse('Unauthorized: This purchase belongs to another account. Please sign in.', { status: 403 });
+        }
+        
         if (purchase.product_type === 'full' || purchase.product_type === 'kit' || purchase.product_type === 'founding') {
           hasKitAccess = true;
         } else if (purchase.product_type === 'guide') {
@@ -36,7 +43,6 @@ export async function GET(req: Request) {
         }
       }
     } else {
-      const session = await getSession();
       if (session) {
         const purchases = db.prepare(`
           SELECT product_type FROM purchases WHERE user_id = ? AND status = 'completed'
@@ -44,6 +50,8 @@ export async function GET(req: Request) {
         
         hasKitAccess = purchases.some(p => p.product_type === 'full' || p.product_type === 'kit' || p.product_type === 'founding');
         hasGuideAccess = purchases.some(p => p.product_type === 'guide');
+      } else {
+        return new NextResponse('Unauthorized: Please sign in or provide a purchase ID.', { status: 401 });
       }
     }
 

@@ -9,10 +9,20 @@ export function Pricing() {
   const router = useRouter();
   const [foundingStats, setFoundingStats] = useState({ claimed: 0, remaining: 50, loading: true });
   const [claiming, setClaiming] = useState(false);
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    // Check if user is logged in
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          setUser(data.user);
+        }
+      })
+      .catch(console.error);
+
+    // Fetch founding status
     fetch('/api/founding-status')
       .then(res => res.json())
       .then(data => {
@@ -25,14 +35,17 @@ export function Pricing() {
 
   const handleClaim = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email) return alert("Please enter name and email");
+    if (!user) {
+      alert("Please sign in with Google (top right) to claim a Founding 50 slot.");
+      return;
+    }
     setClaiming(true);
     
     try {
       const res = await fetch('/api/claim-founding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email })
+        body: JSON.stringify({ name: user.name, email: user.email })
       });
       const data = await res.json();
       
@@ -121,26 +134,20 @@ export function Pricing() {
 
               {!foundingStats.loading && foundingStats.remaining > 0 ? (
                 <form onSubmit={handleClaim} className="space-y-4 mb-6">
-                  <input 
-                    type="text" 
-                    placeholder="Your Name" 
-                    required 
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-950 border border-white/10 rounded-xl text-white" 
-                  />
-                  <input 
-                    type="email" 
-                    placeholder="Your Email" 
-                    required 
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-950 border border-white/10 rounded-xl text-white" 
-                  />
+                  {user ? (
+                    <div className="mb-4 text-sm text-neutral-300">
+                      Logged in as <span className="font-bold text-white">{user.email}</span>
+                    </div>
+                  ) : (
+                    <div className="mb-4 text-sm text-amber-400 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                      Please sign in with Google (top right) to claim your spot.
+                    </div>
+                  )}
+                  
                   <button 
                     type="submit" 
-                    disabled={claiming}
-                    className="w-full py-4 px-8 rounded-xl bg-amber-500 text-neutral-950 font-bold text-lg hover:bg-amber-400 transition-colors disabled:opacity-50"
+                    disabled={claiming || !user}
+                    className="w-full py-4 px-8 rounded-xl bg-amber-500 text-neutral-950 font-bold text-lg hover:bg-amber-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {claiming ? 'Claiming...' : 'CLAIM FOUNDING ACCESS'}
                   </button>
@@ -157,6 +164,7 @@ export function Pricing() {
               )}
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>

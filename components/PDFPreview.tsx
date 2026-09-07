@@ -9,19 +9,19 @@ const previews = [
   {
     title: "Source Engine",
     description: "Curated learning pool",
-    image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
+    image: "/images/source_pool_preview_1788782142388.jpg",
     color: "from-blue-500/20 to-blue-500/5",
   },
   {
     title: "Practice Engine",
     description: "Progressive missions",
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+    image: "/images/practice_missions_preview_1788782162738.jpg",
     color: "from-purple-500/20 to-purple-500/5",
   },
   {
     title: "Open-Source Engine",
     description: "Real repositories",
-    image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
+    image: "/images/open_source_preview_1788782182771.jpg",
     color: "from-green-500/20 to-green-500/5",
   }
 ];

@@ -12,9 +12,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing credential' }, { status: 400 });
     }
 
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '';
+    let clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '';
+    if (clientId) {
+      clientId = clientId.replace(/^https?:\/\//, '').replace(/["']/g, '').trim();
+    }
     
-    if (!clientId) {
+    if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID') {
       return NextResponse.json({ error: 'Server configuration error: Missing Google Client ID' }, { status: 500 });
     }
 
